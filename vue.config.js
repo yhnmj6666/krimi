@@ -42,5 +42,14 @@ module.exports = {
     workboxOptions: {
       exclude: [/\.css.map$/, ".htaccess"]
     }
+  },
+  devServer: {
+    client: {
+      webSocketURL: {
+        hostname: 'example.com',
+      },
+    },
+    allowedHosts: ['example.com'],
+    watchFiles: ['src/**/*', 'public/**/*'],
   }
 };

@@ -72,7 +72,8 @@
             :disabled="
               analysis.length < availableClues.length ||
                 (game.forensicAnalysis &&
-                  game.forensicAnalysis.length === availableClues.length)
+                  game.forensicAnalysis.length === availableClues.length) ||
+                analysis.includes(undefined)
             "
             >Send analysis</v-btn
           >
@@ -116,7 +117,7 @@ export default {
     },
     murderer() {
       const key = Object.keys(this.game.players).find(
-        item => this.game.players[item].index === this.game.murderer
+        item => this.game.players[item].slug === this.game.murderer
       );
       return this.game.players[key];
     }

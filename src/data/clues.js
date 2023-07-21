@@ -1,4 +1,6 @@
 export default [
+  "Switch",
+  "Specimen",
   "Cigarette Butt",
   "Express courier",
   "Ice",
@@ -91,7 +93,7 @@ export default [
   "High heel",
   "Photograph",
   "Watch",
-  "Cigar ",
+  "Cigar",
   "Raincoat",
   "Leather shoe",
   "Certificate",

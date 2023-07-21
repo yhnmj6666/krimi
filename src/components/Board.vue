@@ -31,10 +31,9 @@
                 )}deg)`,
               }"
             >
-              <span class="red--text" v-if="game.murderer === player.index"
-                >Murderer</span
-              >
-              <span v-if="game.murderer !== player.index">Detective</span>
+              <span class="red--text" v-if="game.murderer === player.slug">Murderer</span>
+              <span v-else-if="game.accompliances && game.accompliances.includes(player.slug)">Accompliance</span>
+              <span v-else>Detective</span>
             </div>
             <v-card
               :style="{
@@ -66,8 +65,8 @@
                     small
                     color="blue lighten-4"
                     v-for="(mean, index) in [...game.means].slice(
-                      player.index * 4,
-                      player.index * 4 + 4
+                      player.index * game.meansNumber,
+                      player.index * game.meansNumber + game.meansNumber
                     )"
                     :key="index"
                     >{{ mean }}</v-chip
@@ -78,8 +77,8 @@
                     small
                     color="red lighten-4"
                     v-for="(mean, index) in [...game.clues].slice(
-                      player.index * 4,
-                      player.index * 4 + 4
+                      player.index * game.cluesNumber,
+                      player.index * game.cluesNumber + game.cluesNumber
                     )"
                     :key="'clue' + index"
                     >{{ mean }}</v-chip
@@ -93,6 +92,15 @@
               The game is finshed. The {{ game.winner }} won!
             </div>
           </v-col>
+          <v-btn
+            class="mr-4 mb-4 mb-lg-0"
+            @click.prevent="createNewGame"
+            type="submit"
+            x-large
+            color="accent"
+            v-if="game.finished"
+            >{{ t("Start a new game") }}</v-btn
+          >
         </v-row>
       </v-col>
       <v-col md="3">
@@ -154,6 +162,17 @@ export default {
     },
     suspects() {
       return this.players.filter((item) => item.index !== this.game.detective);
+    },
+  },
+  methods: {
+    async createNewGame() {
+      await this.$store.dispatch(
+        "createGame",
+        {
+          gameId: this.$route.params.id,
+          lang: this.$translate.lang,
+        }
+      );
     },
   },
   mounted() {

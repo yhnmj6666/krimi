@@ -1,4 +1,5 @@
 export default [
+  "Work",
   "Machete",
   "Radiation",
   "Punch",

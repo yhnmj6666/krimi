@@ -1,5 +1,5 @@
-import * as firebase from "firebase/app";
-import "firebase/database";
+import { initializeApp } from "firebase/app";
+import { getDatabase } from "firebase/database";
 const config = {
   apiKey: "AIzaSyDQKeqPh46LhFr2z-BAoxgj6xBEbsMeEqo",
   authDomain: "criminal-minds.firebaseapp.com",
@@ -9,6 +9,7 @@ const config = {
   messagingSenderId: "744849447046",
   appId: "1:744849447046:web:b7d547afee68c2c96ed907"
 };
-firebase.initializeApp(config);
+config;
+const app = initializeApp(config);
 
-export default firebase.database();
+export default getDatabase(app);

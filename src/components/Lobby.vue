@@ -24,11 +24,57 @@
           :players="players"
           @change="changeDetective"
         />
+        <v-col cols="12" md="6">
+          <v-card height="100%">
+            <v-card-text>
+              {{ t("Select numbers of clues for each player:") }}
+              <v-chip-group column>
+                <v-chip
+                  small
+                  color="blue lighten-4"
+                  style="opacity: 1"
+                  :class="{ 'v-chip--active': cluesNumber === num }"
+                  @click="cluesNumber = num"
+                  v-for="(num) in [3,4,5]"
+                  :key="num"
+                >
+                  <v-icon class="mr-1" small v-if="cluesNumber === num"
+                    >mdi-check</v-icon
+                  >
+                  {{ num }}
+                </v-chip>
+              </v-chip-group>
+            </v-card-text>
+          </v-card>
+        </v-col>
+        <v-col cols="12" md="6">
+          <v-card height="100%">
+            <v-card-text>
+              {{ t("Select numbers of means for each player:") }}
+              <v-chip-group column>
+                <v-chip
+                  small
+                  color="red lighten-4"
+                  style="opacity: 1"
+                  :class="{ 'v-chip--active': meansNumber === num }"
+                  @click="meansNumber = num"
+                  v-for="(num) in [3,4,5]"
+                  :key="num"
+                >
+                  <v-icon class="mr-1" small v-if="meansNumber === num"
+                    >mdi-check</v-icon
+                  >
+                  {{ num }}
+                </v-chip>
+              </v-chip-group>
+            </v-card-text>
+          </v-card>
+        </v-col>
         <v-btn
           class="mt-4"
           x-large
           color="accent"
-          :disabled="!players || players.length < 5"
+          :disabled="!players || players.length < 4"
           @click="startGame"
           >{{ t("Start game") }}</v-btn
         >
@@ -110,7 +156,9 @@ export default {
   components: { LobbyPlayers },
   data: () => ({
     snackbar: false,
-    active: 0
+    active: 0,
+    cluesNumber: 4,
+    meansNumber: 4,
   }),
   computed: {
     game() {
@@ -142,8 +190,10 @@ export default {
         game: this.game.gamekey,
         playersObj: this.game.players,
         players: this.players,
-        detective: this.active,
-        lang: this.$translate.lang
+        host: this.active,
+        lang: this.$translate.lang,
+        cluesNumber: this.cluesNumber,
+        meansNumber: this.meansNumber,
       });
     },
     copyText(text) {

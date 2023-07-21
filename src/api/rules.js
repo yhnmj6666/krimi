@@ -13,6 +13,37 @@ export default {
     return allSlugs.indexOf(randomPlayer);
   },
 
+  identities: {
+    detective: "detective",
+    murderer: "murderer",
+    accompliance: "accompliance",
+    host: "host",
+  },
+
+  assignRandomIdentities(players, host) {
+    var available = players.filter((item, index) => index !== host);
+    //shuffle array
+    available = available.map(value => ({ value, sort: Math.random() }))
+                         .sort((a, b) => a.sort - b.sort)
+                         .map(({ value }) => value);
+    var availableSlugs = available.map(item => item.slug);
+    const murderer = 1;
+    const accompliance = Math.floor(available.length/3) - 1;
+    var assignedIdentities = availableSlugs.map((slug, index) => {
+      if (index < murderer)
+        return {slug: slug, identity: this.identities.murderer}
+      else if (index < murderer + accompliance) 
+        return {slug: slug, identity: this.identities.accompliance}
+      else
+        return {slug: slug, identity: this.identities.detective}
+    });
+    assignedIdentities.push({
+      slug: players.filter((item, index) => index === host)[0].slug,
+      identity: this.identities.host
+    });
+    return assignedIdentities;
+  },
+
   getRandom(arr, n) {
     const result = new Array(n);
     let len = arr.length;

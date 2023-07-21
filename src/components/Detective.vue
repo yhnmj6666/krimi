@@ -10,8 +10,8 @@
               small
               color="blue lighten-4"
               v-for="(mean, index) in [...game.means].slice(
-                player.index * 4,
-                player.index * 4 + 4
+                player.index * game.meansNumber,
+                player.index * game.meansNumber + game.meansNumber
               )"
               :key="index"
               >{{ mean }}</v-chip
@@ -22,8 +22,8 @@
               small
               color="red lighten-4"
               v-for="(mean, index) in [...game.clues].slice(
-                player.index * 4,
-                player.index * 4 + 4
+                player.index * game.cluesNumber,
+                player.index * game.cluesNumber + game.cluesNumber
               )"
               :key="'clue' + index"
               >{{ mean }}</v-chip
@@ -31,7 +31,7 @@
           </v-chip-group>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="sheet = !sheet" text>{{ t("Role") }}</v-btn>
+          <v-btn @click="sheet = !sheet" text>{{ t("Role & Board") }}</v-btn>
           <v-btn @click="passTurn" :disabled="disableActions" text>{{
             t("Pass turn")
           }}</v-btn>
@@ -46,7 +46,8 @@
       </v-card>
     </v-col>
     <v-bottom-sheet inset v-model="sheet">
-      <v-sheet class="text-center" height="600px">
+      <v-sheet class="text-center" height="750px"
+        style="height:750px; overflow-y:auto;">
         <v-container>
           <v-btn class="mt-6" dark @click="sheet = !sheet">{{
             t("close")
@@ -54,10 +55,17 @@
           <p class="headline mt-4">{{ t("You are") }} {{ playerRole }}</p>
           <murderer-choice
             @choice="this.sheet = false"
-            v-if="player.index === game.murderer"
+            v-if="player.slug === game.murderer"
             :game="game"
             :player="player"
           />
+          <accompliance
+            @choice="this.sheet = false"
+            v-if="game.accompliances && game.accompliances.includes(player.slug)"
+            :game="game"
+            :player="player"
+          />
+          <board-view/>
         </v-container>
       </v-sheet>
     </v-bottom-sheet>
@@ -97,8 +105,8 @@
                           @click="guess.mean = mean"
                           color="blue lighten-4"
                           v-for="(mean, index) in [...game.means].slice(
-                            selectedPlayer.index * 4,
-                            selectedPlayer.index * 4 + 4
+                            selectedPlayer.index * game.meansNumber,
+                            selectedPlayer.index * game.meansNumber + game.meansNumber
                           )"
                           :key="index"
                         >
@@ -121,8 +129,8 @@
                           @click="guess.key = clue"
                           color="red lighten-4"
                           v-for="(clue, index) in [...game.clues].slice(
-                            selectedPlayer.index * 4,
-                            selectedPlayer.index * 4 + 4
+                            selectedPlayer.index * game.cluesNumber,
+                            selectedPlayer.index * game.cluesNumber + game.cluesNumber
                           )"
                           :key="index"
                         >
@@ -136,7 +144,12 @@
                   </v-col>
                 </v-row>
                 <v-card-text>
-                  <v-btn @click="sendGuess">{{ t("Send guess") }}</v-btn>
+                  <v-btn 
+                    @click="sendGuess"
+                    :disabled="guess.player == null || guess.mean == null || guess.key == null || 
+                    !game.means.slice(guess.player*game.meansNumber, guess.player*game.meansNumber+game.meansNumber).includes(guess.mean) || 
+                    !game.clues.slice(guess.player*game.cluesNumber, guess.player*game.cluesNumber+game.cluesNumber).includes(guess.key) "
+                    >{{ t("Send guess") }}</v-btn>
                 </v-card-text>
               </v-card-text>
             </v-card>
@@ -149,15 +162,17 @@
 
 <script>
 import MurdererChoice from "@/components/MurdererChoice";
+import Accompliance from "@/components/Accompliance";
+import BoardView from "./BoardView.vue";
 export default {
-  components: { MurdererChoice },
+  components: { MurdererChoice, Accompliance, BoardView },
   data: () => ({
     sheet: true,
     solve: false,
     guess: {
       player: null,
       mean: null,
-      key: null
+      key: null,
     }
   }),
   props: {
@@ -189,13 +204,16 @@ export default {
   computed: {
     disableActions() {
       return (
+        (this.game.forensicAnalysis == null || this.game.forensicAnalysis.length < this.game.availableClues) ||
         (this.game.passedTurns && this.game.passedTurns[this.player.index]) ||
         (this.game.guesses && !!this.game.guesses[this.player.index])
       );
     },
     playerRole() {
-      if (this.player.index === this.game.murderer) {
+      if (this.player.slug === this.game.murderer) {
         return this.t("the murderer");
+      } else if (this.game.accompliances && this.game.accompliances.includes(this.player.slug)) {
+        return "an accompliance";
       } else {
         return this.t("a detective");
       }

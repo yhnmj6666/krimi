@@ -13,8 +13,8 @@
               @click="murdererChoice.mean = mean"
               :disabled="!!game.murdererChoice"
               v-for="(mean, index) in [...game.means].slice(
-                player.index * 4,
-                player.index * 4 + 4
+                player.index * game.meansNumber,
+                player.index * game.meansNumber + game.meansNumber
               )"
               :key="index"
             >
@@ -40,8 +40,8 @@
               color="red lighten-4"
               :disabled="!!game.murdererChoice"
               v-for="(clue, index) in [...game.clues].slice(
-                player.index * 4,
-                player.index * 4 + 4
+                player.index * game.cluesNumber,
+                player.index * game.cluesNumber + game.cluesNumber
               )"
               :key="index"
             >

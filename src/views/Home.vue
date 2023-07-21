@@ -88,7 +88,7 @@ export default {
     async createNewGame() {
       const game = await this.$store.dispatch(
         "createGame",
-        this.$translate.lang
+        {lang: this.$translate.lang}
       );
       this.$router.push("/game/" + game.gameId);
     },

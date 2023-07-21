@@ -15,6 +15,11 @@
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action>
+          <v-btn icon @click="exitGame(player)">
+            <v-icon>mdi-exit-run</v-icon>
+          </v-btn>
+        </v-list-item-action>
+        <v-list-item-action>
           <v-btn icon @click="makeDetective(index)">
             <v-icon :color="index === active ? 'secondary' : 'gray'"
               >mdi-police-badge</v-icon
@@ -48,6 +53,12 @@ export default {
       await this.$store.dispatch("setDetective", {
         game: this.game.gamekey,
         player: this.active
+      });
+    },
+    async exitGame(player) {
+      await this.$store.dispatch("removePlayer", {
+        game: this.game.gamekey,
+        playerkey: player.playerkey
       });
     }
   }
