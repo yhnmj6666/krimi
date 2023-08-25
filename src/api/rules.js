@@ -23,9 +23,8 @@ export default {
   assignRandomIdentities(players, host) {
     var available = players.filter((item, index) => index !== host);
     //shuffle array
-    available = available.map(value => ({ value, sort: Math.random() }))
-                         .sort((a, b) => a.sort - b.sort)
-                         .map(({ value }) => value);
+    available = shuffle(available);
+    
     var availableSlugs = available.map(item => item.slug);
     const murderer = 1;
     const accompliance = Math.floor(available.length/3) - 1;
@@ -59,3 +58,21 @@ export default {
     return result;
   }
 };
+
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex != 0) {
+
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
+}

@@ -62,6 +62,16 @@
       >
     </v-col>
   </v-row>
+  <v-row class="text-left" v-if="game.accompliances">
+    <v-card>
+        <v-card-title style="word-break: inherit"
+          >
+          {{
+            t("Your accomplices are: ") + game.accompliances.map((player) => player.name).join(", ")
+          }}</v-card-title
+        >
+      </v-card>
+  </v-row>
 </template>
 
 <script>
